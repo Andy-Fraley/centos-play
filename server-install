@@ -62,7 +62,7 @@ fi
 
 
 #
-# git config
+# ssh-keygen (for git)
 #
 if [ ! -f $HOME/.ssh/id_rsa.pub ]; then
     echo Need to generate SSH keys...
