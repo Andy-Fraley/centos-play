@@ -60,6 +60,21 @@ fi
 
 
 #
+# git config
+#
+if [ ! -f $HOME/.ssh/id_rsa.pub ]; then
+    echo Need to generate SSH keys...
+    echo "Please enter SSH key catch phrase (write this down): "
+    read ssh_catchphrase
+    ssh-keygen -q -t rsa -N $ssh_catchphrase -f ~/.ssh/id_rsa
+    echo Now copy contents of ~/.ssh/id_rsa.pub into GitHub user profile so this host is registered
+else
+    echo SSH keys already generated for this host.  Delete ~/.ssh/id_rsa.pub and re-run this script to re-generate
+fi
+
+
+
+#
 # Install httpd
 #
 if ! rpm -qa | grep -qw httpd; then
