@@ -1,0 +1,99 @@
+#/bin/sh
+
+# CentOS LAMP config script
+
+
+
+#
+# Before starting, make sure everything already installed is up-to-date
+#
+yum update -y
+
+
+
+#
+# Start sshd
+#
+echo Ensuring sshd is running...
+chkconfig sshd on
+service sshd start
+
+
+
+#
+# Install emacs
+#
+if ! rpm -qa | grep -qw emacs; then
+    echo Installing emacs...
+    yum install emacs -y
+else
+    echo emacs already installed...skipping
+fi
+
+
+
+#
+# Add 'clean' command to this user
+#
+if [ -f $HOME/.bashrc ]; then
+    if grep --quiet "alias clean" $HOME/.bashrc; then
+        echo 'clean' alias already configured
+    else
+        echo Setting up 'clean' alias...
+        echo "alias clean=\"rm -f \#*\# *~ .*~\"" >>$HOME/.bashrc
+        alias clean="rm -f \#*\# *~ .*~"
+    fi
+fi
+
+
+
+#
+# Install git
+#
+if ! rpm -qa | grep -qw git; then
+    echo Installing git...
+    yum install git -y
+else
+    echo git already installed...skipping
+fi
+
+
+
+#
+# Install httpd
+#
+if ! rpm -qa | grep -qw httpd; then
+    echo Installing and starting httpd...
+    yum install httpd -y
+    chkconfig httpd on
+    service httpd start
+else
+    echo httpd already installed...skipping
+fi
+
+
+
+#
+# Install mysql
+#
+if ! rpm -qa | grep -qw mysql; then
+    echo Installing and starting mysql...
+    yum install mysql mysql-server -y
+    chkconfig mysqld on
+    service mysqld start
+else
+    echo mysql already installed...skipping
+fi
+
+
+
+#
+# Install php and php-mysql
+#
+if ! rpm -qa | grep -qw php-mysql; then
+    echo Installing php and php-mysql...
+    yum install php php-mysql -y
+    service httpd restart
+else
+    echo php and php-mysql already installed...skipping
+fi
