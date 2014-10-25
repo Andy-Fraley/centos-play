@@ -53,6 +53,8 @@ fi
 if ! rpm -qa | grep -qw git; then
     echo Installing git...
     yum install git -y
+    git config --global user.name "Andy Fraley"
+    git config --global user.email "asfraley@gmail.com"
 else
     echo git already installed...skipping
 fi
