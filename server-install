@@ -1,4 +1,4 @@
-#/bin/sh
+#!/bin/bash -ex
 
 # CentOS LAMP config script
 
@@ -7,6 +7,7 @@
 #
 # Before starting, make sure everything already installed is up-to-date
 #
+echo "===> Updating all packages..."
 yum update -y
 
 
@@ -14,7 +15,7 @@ yum update -y
 #
 # Start sshd
 #
-echo Ensuring sshd is running...
+echo "===> Ensuring sshd is running..."
 chkconfig sshd on
 service sshd start
 
@@ -24,10 +25,10 @@ service sshd start
 # Install emacs
 #
 if ! rpm -qa | grep -qw emacs; then
-    echo Installing emacs...
+    echo "===> Installing emacs..."
     yum install emacs -y
 else
-    echo emacs already installed...skipping
+    echo "===> emacs already installed...skipping"
 fi
 
 
@@ -37,9 +38,9 @@ fi
 #
 if [ -f $HOME/.bashrc ]; then
     if grep --quiet "alias clean" $HOME/.bashrc; then
-        echo 'clean' alias already configured
+        echo "===> 'clean' alias already configured"
     else
-        echo Setting up 'clean' alias...
+        echo "===> Setting up 'clean' alias..."
         echo "alias clean=\"rm -f \#*\# *~ .*~\"" >>$HOME/.bashrc
         alias clean="rm -f \#*\# *~ .*~"
     fi
@@ -51,12 +52,12 @@ fi
 # Install git
 #
 if ! rpm -qa | grep -qw git; then
-    echo Installing git...
+    echo "===> Installing git..."
     yum install git -y
     git config --global user.name "Andy Fraley"
     git config --global user.email "asfraley@gmail.com"
 else
-    echo git already installed...skipping
+    echo "===> git already installed...skipping"
 fi
 
 
@@ -65,25 +66,38 @@ fi
 # ssh-keygen (for git)
 #
 if [ ! -f $HOME/.ssh/id_rsa.pub ]; then
-    echo Need to generate SSH keys...
+    echo "===> Need to generate SSH keys..."
     ssh-keygen -q -t rsa -f ~/.ssh/id_rsa
-    echo Now copy contents of ~/.ssh/id_rsa.pub into GitHub user profile so this host is registered
+    echo "===> Now copy contents of ~/.ssh/id_rsa.pub into GitHub user profile so this host is registered"
 else
-    echo SSH keys already generated for this host.  Delete ~/.ssh/id_rsa.pub and re-run this script to re-generate
+    echo "===> SSH keys already generated for this host.  Delete ~/.ssh/id_rsa.pub and re-run this script to re-generate"
 fi
 
 
 
 #
-# Install httpd
+# Install telnet client
+#
+if ! rpm -qa | grep -qw telnet; then
+    echo "===> Installing telnet..."
+    yum install telnet -y
+else
+    echo "===> telnet already installed...skipping"
+fi
+
+
+
+#
+# Install httpd and ensure set for "AllowOverride All"
 #
 if ! rpm -qa | grep -qw httpd; then
-    echo Installing and starting httpd...
+    echo "===> Installing httpd, setting AllowOverride All,  and starting httpd..."
     yum install httpd -y
     chkconfig httpd on
+    sed -i -e 's/AllowOverride None/AllowOverride All/' /etc/httpd/conf/httpd.conf
     service httpd start
 else
-    echo httpd already installed...skipping
+    echo "===> httpd already installed...skipping"
 fi
 
 
@@ -92,12 +106,12 @@ fi
 # Install mysql
 #
 if ! rpm -qa | grep -qw mysql; then
-    echo Installing and starting mysql...
+    echo "===> Installing and starting mysql..."
     yum install mysql mysql-server -y
     chkconfig mysqld on
     service mysqld start
 else
-    echo mysql already installed...skipping
+    echo "===> mysql already installed...skipping"
 fi
 
 
@@ -106,9 +120,9 @@ fi
 # Install php and php-mysql
 #
 if ! rpm -qa | grep -qw php-mysql; then
-    echo Installing php and php-mysql...
+    echo "===> Installing php and php-mysql..."
     yum install php php-mysql -y
     service httpd restart
 else
-    echo php and php-mysql already installed...skipping
+    echo "===> php and php-mysql already installed...skipping"
 fi
