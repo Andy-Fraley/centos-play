@@ -5,6 +5,21 @@
 
 
 #
+# NOTE!  To set static IP address on this VM, put the following (uncommented) in
+#     /etc/sysconfig/network-scripts/ifcfg-eth0.  To access it from hosting MacOS,
+#     sudo emacs /private/etc/hosts and add entry "192.168.0.227 centos_play"
+#
+#DEVICE=eth0 
+#BOOTPROTO=none 
+#ONBOOT=yes 
+#NETWORK=192.168.0.0
+#NETMASK=255.255.255.0 
+#IPADDR=192.168.0.227
+#USERCTL=no
+
+
+
+#
 # Before starting, make sure everything already installed is up-to-date
 #
 echo "===> Updating all packages..."
@@ -126,3 +141,11 @@ if ! rpm -qa | grep -qw php-mysql; then
 else
     echo "===> php and php-mysql already installed...skipping"
 fi
+
+
+
+#
+# Install node.js and npm
+#
+curl -sL https://rpm.nodesource.com/setup | bash -
+yum install -y nodejs
