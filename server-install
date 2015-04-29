@@ -147,5 +147,48 @@ fi
 #
 # Install node.js and npm
 #
-curl -sL https://rpm.nodesource.com/setup | bash -
-yum install -y nodejs
+if ! rpm -qa | grep -qw nodejs; then
+    echo "===> Installing php and php-mysql..."
+    curl -sL https://rpm.nodesource.com/setup | bash -
+    yum install -y nodejs
+else
+    echo "===> nodejs and npm already installed...skipping"
+fi
+
+
+
+#
+# Install EPEL6 (Extra Packages for Enterprise Linux)
+#
+if ! rpm -qa | grep -qw epel-release-6; then
+    echo "===> Installing EPEL6 RPM library..."
+    wget --directory-prefix=$HOME http://dl.fedoraproject.org/pub/epel/6/x86_64/epel-release-6-8.noarch.rpm
+    rpm -Uvh $HOME/epel-release-6-8.noarch.rpm
+    rm $HOME/epel-release-6-8.noarch.rpm
+else
+    echo "===> EPEL6 RPM library already installed...skipping"
+fi
+
+
+
+#
+# Install siege (web load testing tool)
+#
+if ! rpm -qa | grep -qw siege; then
+    echo "===> Installing siege..."
+    yum install siege -y
+else
+    echo "===> siege already installed...skipping"
+fi
+
+
+
+#
+# Install screen (detach into background utility)
+#
+if ! rpm -qa | grep -qw screen; then
+    echo "===> Installing screen..."
+    yum install screen -y
+else
+    echo "===> screen already installed...skipping"
+fi
