@@ -1,0 +1,12 @@
+DEVICE=eth0
+BOOTPROTO=none
+ONBOOT=yes
+USERCTL=no
+
+# Edit these for different static address (and network and DNS servers)
+NETWORK=192.168.0.0
+NETMASK=255.255.255.0
+IPADDR=192.168.0.227
+GATEWAY=192.168.0.1
+DNS1=65.32.5.111
+DNS2=65.32.5.112
